@@ -2,9 +2,9 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
-app.use(cors()); // Cho phép CORS
+app.use(cors()); // Cho phép CORS để frontend có thể gọi API
 
-// Định nghĩa route /getVideo
+// Kiểm tra route 
 app.get("/getVideo", async (req, res) => {
     const videoUrl = req.query.url;
     if (!videoUrl) {
@@ -20,4 +20,4 @@ app.get("/getVideo", async (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
