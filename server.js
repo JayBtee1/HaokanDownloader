@@ -1,39 +1,23 @@
 const express = require("express");
-const axios = require("axios");
 const cors = require("cors");
 
 const app = express();
-const port = process.env.PORT || 3000; // Sử dụng PORT do Railway cấp
+app.use(cors()); // Cho phép CORS
 
-app.use(cors());
-app.use(express.json());
-
-// API kiểm tra server
-app.get("/", (req, res) => {
-    res.send("Haokan Downloader API is running!");
-});
-
-// API tải video từ Haokan
-app.get("/download", async (req, res) => {
-    try {
-        const videoUrl = req.query.url;
-        if (!videoUrl) {
-            return res.status(400).json({ error: "Missing video URL" });
-        }
-
-        // Ví dụ: Gửi request đến server Haokan để lấy video
-        const response = await axios.get(videoUrl, { responseType: "stream" });
-
-        res.setHeader("Content-Disposition", 'attachment; filename="video.mp4"');
-        res.setHeader("Content-Type", "video/mp4");
-
-        response.data.pipe(res);
-    } catch (error) {
-        console.error("Download error:", error.message);
-        res.status(500).json({ error: "Failed to fetch video" });
+// Định nghĩa route /getVideo
+app.get("/getVideo", async (req, res) => {
+    const videoUrl = req.query.url;
+    if (!videoUrl) {
+        return res.status(400).json({ error: "Missing video URL" });
     }
+
+    // Trả về dữ liệu giả lập để kiểm tra
+    res.json({
+        title: "Sample Video",
+        thumbnail: "https://via.placeholder.com/150",
+        downloadUrl: "https://example.com/video.mp4",
+    });
 });
 
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-});
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
