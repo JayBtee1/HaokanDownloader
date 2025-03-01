@@ -1,10 +1,56 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Haokan Downloader</title>
-</head>
-<body>
-    <h1>Chào mừng đến với Haokan Downloader!</h1>
-</body>
-</html>
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import axios from "axios";
+
+export default function Home() {
+  const [url, setUrl] = useState("");
+  const [video, setVideo] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const API_URL = "https://haokandownloader-production.up.railway.app";
+
+  const fetchVideo = async () => {
+    if (!url) return;
+    setLoading(true);
+    try {
+      const response = await axios.get(`${API_URL}/getVideo`, { params: { url } });
+      setVideo(response.data);
+    } catch (error) {
+      console.error("Error fetching video:", error);
+      setVideo(null);
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-900 text-white">
+      <h1 className="text-2xl font-bold mb-4">Haokan Video Downloader</h1>
+      <div className="flex gap-2 mb-4 w-full max-w-lg">
+        <Input 
+          value={url} 
+          onChange={(e) => setUrl(e.target.value)} 
+          placeholder="Nhập link video Haokan..." 
+          className="flex-1" 
+        />
+        <Button onClick={fetchVideo} disabled={loading}>Get Video</Button>
+      </div>
+      {loading && <p>Đang tải...</p>}
+      {video && (
+        <Card className="w-full max-w-lg p-4 text-black">
+          <CardContent>
+            <h2 className="text-lg font-bold">{video.title}</h2>
+            <img src={video.thumbnail} alt="Thumbnail" className="w-full rounded mt-2" />
+            <a 
+              href={video.downloadUrl} 
+              download 
+              className="block mt-4 bg-blue-500 text-white p-2 rounded text-center"
+            >
+              Download
+            </a>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}
